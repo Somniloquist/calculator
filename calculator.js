@@ -35,16 +35,20 @@ function calculator() {
     }));
 
     operators.forEach(btn => btn.addEventListener('click', function(e) {
-        equation.push(displayValue.join(''));
-        displayValue = [];
-        if(equation.slice(-1).toString().match(/[\+\-\/\*]/g)) {
-            equation.pop();
-            equation.push(this.textContent);
-        } else {
-            equation.push(this.textContent);
+        //allow changing of operator if an oporator is pressed again
+        if (displayValue != undefined && displayValue.length != 0) {
+            equation.push(parseInt(displayValue.join(''), 10));
+            displayValue = [];
+            if(equation.slice(-1).toString().match(/[\+\-\/\*]/g)) {
+                equation.pop();
+                equation.push(this.textContent);
+            } else {
+                equation.push(this.textContent);
+            }
+            updateMainDisplay();
+            updateSecondaryDisplay(equation);
+
         }
-        updateMainDisplay();
-        updateSecondaryDisplay(equation);
     }));
 
     clear.addEventListener('click', function(e){
@@ -59,8 +63,6 @@ function calculator() {
     //     displayValue = [];
     //     updateSecondaryDisplay();
     // });
-
-
 }
 
 function updateSecondaryDisplay(content = []) {
