@@ -36,17 +36,15 @@ function calculator() {
 
     operators.forEach(btn => btn.addEventListener('click', function(e) {
         //allow changing of operator if an oporator is pressed again
-        if (displayValue != undefined && displayValue.length != 0) {
+        if(displayValue.length === 0 &&
+            equation.slice(-1).toString().match(/[\+\-\/\*]/g) != undefined) {
+            equation.pop();
+            equation.push(this.textContent);
+            updateSecondaryDisplay(equation);
+        } else {
             equation.push(parseInt(displayValue.join(''), 10));
             displayValue = [];
-            if(equation.slice(-1).toString().match(/[\+\-\/\*]/g) != undefined) {
-                console.log('hi');
-                equation.pop();
-                equation.push(this.textContent);
-                console.log(this.textContent);
-            } else {
-                equation.push(this.textContent);
-            }
+            equation.push(this.textContent);
             updateMainDisplay();
             updateSecondaryDisplay(equation);
             console.log(equation);
@@ -67,7 +65,8 @@ function calculator() {
     // });
 }
 
-function updateSecondaryDisplay(content = []) {
+function updateSecondaryDisplay(content) {
+    content = content || [];
     if(content) content = content.join('');
     document.getElementById('display-secondary').textContent = content;
 }
