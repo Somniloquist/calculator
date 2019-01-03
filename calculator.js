@@ -20,14 +20,14 @@ function operate(operator, a, b) {
 
 
 function calculator() {
-    updateMainDisplay(0);
+    updateMainDisplay();
     let displayValue = [];
     let equation = [];
 
     const btns = document.querySelectorAll('.btn-number');
     const operators = document.querySelectorAll('.btn-operator');
-    const clear = document.getElementById('btn-clear');
-    const equals = document.getElementById('btn-equals');
+    const clear = document.querySelector('[data-action="clear"]');
+    const equals = document.querySelector('[data-action="equals"]');
 
     btns.forEach(btn => btn.addEventListener('click', function(e){
         displayValue.push(this.textContent);
@@ -40,6 +40,7 @@ function calculator() {
             equation.push(parseInt(displayValue.join(''), 10));
             displayValue = [];
             if(equation.slice(-1).toString().match(/[\+\-\/\*]/g) != undefined) {
+                console.log('hi');
                 equation.pop();
                 equation.push(this.textContent);
                 console.log(this.textContent);
@@ -53,7 +54,7 @@ function calculator() {
     }));
 
     clear.addEventListener('click', function(e){
-        updateMainDisplay(0);
+        updateMainDisplay();
         updateSecondaryDisplay();
         displayValue = [];
         equation = [];
@@ -71,7 +72,8 @@ function updateSecondaryDisplay(content = []) {
     document.getElementById('display-secondary').textContent = content;
 }
 
-function updateMainDisplay(content = 0) {
+function updateMainDisplay(content) {
+    content = content || 0;
     if(content) content = content.join('');
     document.getElementById('display-main').textContent = content;
 }
