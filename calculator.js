@@ -67,7 +67,7 @@ function calculator() {
 
 function updateSecondaryDisplay(content) {
     content = content || [];
-    if(content) content = content.join('');
+    if(content) content = content.join(' ');
     document.getElementById('display-secondary').textContent = content;
 }
 
