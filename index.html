@@ -1,40 +1,17 @@
 <!DOCTYPE html>
-<style>
-    body {
-        font-family: 'sans';
-    }
-    #calculator {
-        margin: auto;
-        max-width: 500px;
-        display: grid;
-        grid-gap: 10px;
-        grid-template-columns: repeat(3, 1fr);
-    }
-    .display {
-        grid-column: 1 / -1;
-        border: 1px solid black;
-        padding: 0.5em;
-        font-size: 1.5em;
-        text-align: right;
-        overflow: hidden;
-    }
-    #display-secondary {
-        border: none;
-        font-size: 1em;
-    }
-    .btn {
-        padding: 1em;
-    }
-    
-</style>
 <html>
     <head>
+        <link rel="stylesheet" href="index.css">
         <title>calculator.js</title>
     </head>
     <body>
         <div id="calculator">
             <div class="display" id="display-secondary"></div>
             <div class="display" id="display-main"></div>
+            <button class="btn btn-operator" data-action="add">+</button>
+            <button class="btn btn-operator" data-action="subtract">-</button>
+            <button class="btn btn-operator" data-action="multiply">*</button>
+            <button class="btn btn-operator" data-action="divide">/</button>
             <button class="btn btn-number">7</button>
             <button class="btn btn-number">8</button>
             <button class="btn btn-number">9</button>
@@ -44,15 +21,10 @@
             <button class="btn btn-number">1</button>
             <button class="btn btn-number">2</button>
             <button class="btn btn-number">3</button>
+            <button class="btn btn-decimal" data-action="decimal">.</button>
             <button class="btn btn-number">0</button>
-            <button class="btn" id="btn-clear">C</button>
-            <button class="btn" id="btn-equals">=</button>
-            <div class="operators-container">
-                <button class="btn btn-operator">+</button>
-                <button class="btn btn-operator">-</button>
-                <button class="btn btn-operator">*</button>
-                <button class="btn btn-operator">/</button>
-            </div>
+            <button class="btn btn-clear" data-action="clear">C</button>
+            <button class="btn btn-equals" data-action="equals">=</button>
         </div>
         <script src='calculator.js'></script>
     </body>

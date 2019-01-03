@@ -39,15 +39,16 @@ function calculator() {
         if (displayValue != undefined && displayValue.length != 0) {
             equation.push(parseInt(displayValue.join(''), 10));
             displayValue = [];
-            if(equation.slice(-1).toString().match(/[\+\-\/\*]/g)) {
+            if(equation.slice(-1).toString().match(/[\+\-\/\*]/g) != undefined) {
                 equation.pop();
                 equation.push(this.textContent);
+                console.log(this.textContent);
             } else {
                 equation.push(this.textContent);
             }
             updateMainDisplay();
             updateSecondaryDisplay(equation);
-
+            console.log(equation);
         }
     }));
 
