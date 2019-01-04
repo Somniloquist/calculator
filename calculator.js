@@ -14,6 +14,19 @@ function operate(operator, a, b) {
     return operator(a, b);
 }
 
+function solve(equation) {
+    const operators = ['multiply', 'divide', 'add', 'subtract'];
+
+    operators.forEach(operator => {
+        while(equation.indexOf(operator) > -1) {
+            const index = equation.indexOf(operator);
+            const a = equation[index - 1];
+            const b = equation[index + 1];
+            equation.splice(index - 1, 3, operate(window[operator], a, b));
+        }
+    });
+}
+
 function previousInputIsOperator(equation) {
     return equation.slice(-1).toString().match(/(add|subtract|multiply|divide)/g) ? true : false;
 }
@@ -79,13 +92,8 @@ function calculator() {
         if(displayValue.length > 0) {
             equation.push(removeTrailingZeros(displayValue));
         }
-        // solve equation from right to left
-        while(equation.length > 1) {
-            const a = equation[equation.length - 3];
-            const b = equation[equation.length - 1];
-            const operator = equation[equation.length - 2];
-            equation.splice(-3, 3, operate(window[operator], a, b));
-        }
+
+        solve(equation);
 
         displayValue = equation.slice();
         updateMainDisplay(equation);
