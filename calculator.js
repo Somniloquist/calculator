@@ -19,7 +19,7 @@ function previousInputIsOperator(equation) {
 }
 
 function removeTrailingZeros(n) {
-    return parseInt(n.join(''), 10);
+    return parseFloat(n.join(''));
 }
 
 function clearDisplay() {
@@ -87,7 +87,6 @@ function calculator() {
             equation.splice(-3, 3, operate(window[operator], a, b));
         }
 
-        clearDisplay();
         displayValue = equation.slice();
         updateMainDisplay(equation);
         equation = [];
