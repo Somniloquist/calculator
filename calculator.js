@@ -96,8 +96,9 @@ function calculator() {
         solve(equation);
 
         displayValue = equation.slice();
-        updateMainDisplay(equation);
+        clearDisplay();
         equation = [];
+        updateMainDisplay(displayValue);
     });
 }
 
