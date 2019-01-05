@@ -42,7 +42,10 @@ function clearDisplay() {
 
 function updateSecondaryDisplay(content) {
     content = content || [];
-    if(content) content = content.join('    ');
+    if(content) content = content.join('    ').replace(/(add)/g, '+')
+                                            .replace(/(subtract)/g, '-')
+                                            .replace(/(multiply)/g, 'x')
+                                            .replace(/(divide)/g, '/');
     document.getElementById('display-secondary').textContent = content;
 }
 
