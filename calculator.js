@@ -64,14 +64,16 @@ function calculator() {
     const operators = document.querySelectorAll('.btn-operator');
     const clear = document.querySelector('[data-action="clear"]');
     const answer = document.querySelector('[data-action="equals"]');
-
+    
     btns.forEach(btn => btn.addEventListener('click', function(e){
-        displayValue.push(this.textContent);
-        updateMainDisplay(displayValue);
+        if(displayValue.length > 0 || btn.textContent != '0') {
+            displayValue.push(this.textContent);
+            updateMainDisplay(displayValue);
+        }
     }));
 
     operators.forEach(btn => btn.addEventListener('click', function(e) {
-        //allow changing of operator if an oporator is pressed again
+        //change operator if an oporator is pressed again
         if(displayValue.length === 0 && previousInputIsOperator(equation)) {
             equation.pop();
             equation.push(this.getAttribute('data-action'));
@@ -95,7 +97,6 @@ function calculator() {
         if(displayValue.length > 0) {
             equation.push(removeTrailingZeros(displayValue));
         }
-
         solve(equation);
 
         displayValue = equation.slice();
