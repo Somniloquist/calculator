@@ -42,10 +42,10 @@ function clearDisplay() {
 
 function updateSecondaryDisplay(content) {
     content = content || [];
-    if(content) content = content.join('    ').replace(/(add)/g, '+')
-                                            .replace(/(subtract)/g, '-')
-                                            .replace(/(multiply)/g, 'x')
-                                            .replace(/(divide)/g, '/');
+    if(content) content = content.join(' ').replace(/(add)/g, '+')
+                                           .replace(/(subtract)/g, '-')
+                                           .replace(/(multiply)/g, 'x')
+                                           .replace(/(divide)/g, '/');
     document.getElementById('display-secondary').textContent = content;
 }
 
@@ -61,6 +61,7 @@ function calculator() {
     clearDisplay();
 
     const btns = document.querySelectorAll('.btn-number');
+    const decimal = document.querySelector('[data-action="decimal"]')
     const operators = document.querySelectorAll('.btn-operator');
     const clear = document.querySelector('[data-action="clear"]');
     const answer = document.querySelector('[data-action="equals"]');
@@ -71,6 +72,14 @@ function calculator() {
             updateMainDisplay(displayValue);
         }
     }));
+
+    decimal.addEventListener('click', function(e) {
+        if(!displayValue.includes('.')) {
+            if (displayValue.length === 0) displayValue.push('0');
+            displayValue.push(this.textContent);
+            updateMainDisplay(displayValue);
+        }
+    });
 
     operators.forEach(btn => btn.addEventListener('click', function(e) {
         //change operator if an oporator is pressed again
@@ -93,6 +102,7 @@ function calculator() {
         equation = [];
     });
 
+    // todo: remember previous answer
     answer.addEventListener('click', function(e) {
         if(displayValue.length > 0) {
             equation.push(removeTrailingZeros(displayValue));
