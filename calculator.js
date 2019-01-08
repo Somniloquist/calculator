@@ -58,6 +58,7 @@ function updateMainDisplay(content) {
 function calculator() {
     let displayValue = [];
     let equation = [];
+    let ans = [];
     clearDisplay();
 
     const btns = document.querySelectorAll('.btn-number');
@@ -102,17 +103,20 @@ function calculator() {
         equation = [];
     });
 
-    // todo: remember previous answer
     answer.addEventListener('click', function(e) {
         if(displayValue.length > 0) {
             equation.push(removeTrailingZeros(displayValue));
         }
-        solve(equation);
+        if(equation.length === 0 || previousInputIsOperator(equation)) {
+            return;
+        }
 
-        displayValue = equation.slice();
+        solve(equation);
+        ans = equation.slice();
         clearDisplay();
+        updateMainDisplay(ans);
+        displayValue = [];
         equation = [];
-        updateMainDisplay(displayValue);
     });
 }
 
