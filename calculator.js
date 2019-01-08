@@ -69,6 +69,7 @@ function calculator() {
     
     btns.forEach(btn => btn.addEventListener('click', function(e){
         if(displayValue.length > 0 || btn.textContent != '0') {
+            if (ans.length > 0) ans = [];
             displayValue.push(this.textContent);
             updateMainDisplay(displayValue);
         }
@@ -83,6 +84,10 @@ function calculator() {
     });
 
     operators.forEach(btn => btn.addEventListener('click', function(e) {
+        if (ans.length > 0) {
+            displayValue = ans.slice();
+            ans = [];
+        }
         //change operator if an oporator is pressed again
         if(displayValue.length === 0 && previousInputIsOperator(equation)) {
             equation.pop();
@@ -114,9 +119,9 @@ function calculator() {
         solve(equation);
         ans = equation.slice();
         clearDisplay();
-        updateMainDisplay(ans);
         displayValue = [];
         equation = [];
+        updateMainDisplay(ans);
     });
 }
 
