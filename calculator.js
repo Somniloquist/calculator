@@ -116,12 +116,16 @@ function calculator() {
             return;
         }
 
+        let fullEquation = equation.slice();
+        fullEquation.push('=')
+
         solve(equation);
         ans = equation.slice();
         clearDisplay();
         displayValue = [];
         equation = [];
         updateMainDisplay(ans);
+        updateSecondaryDisplay(fullEquation);
     });
 }
 
