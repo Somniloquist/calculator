@@ -14,6 +14,15 @@ function operate(operator, a, b) {
     return operator(a, b);
 }
 
+function round(n, decimals) {
+    decimals = decimals || 1;
+    return Number(Math.round(n + 'e' + decimals) + 'e-' + decimals);
+}
+
+function roundEquation(equation, decimals) {
+    return equation.map(n => isNaN(n) ? n : round(n, decimals))
+}
+
 function solve(equation) {
     const operators = ['multiply', 'divide', 'add', 'subtract'];
 
@@ -42,7 +51,7 @@ function clearDisplay() {
 
 function updateSecondaryDisplay(content) {
     content = content || [];
-    if(content) content = content.join(' ').replace(/(add)/g, '+')
+    if(content) content = roundEquation(content, 4).join(' ').replace(/(add)/g, '+')
                                            .replace(/(subtract)/g, '-')
                                            .replace(/(multiply)/g, 'x')
                                            .replace(/(divide)/g, '/');
@@ -51,7 +60,7 @@ function updateSecondaryDisplay(content) {
 
 function updateMainDisplay(content) {
     content = content || 0;
-    if(content) content = content.join('');
+    if(content) content = roundEquation(content, 4).join('');
     document.getElementById('display-main').textContent = content;
 }
 
