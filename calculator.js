@@ -56,12 +56,16 @@ function updateSecondaryDisplay(content) {
                                             .replace(/(multiply)/g, 'x')
                                             .replace(/(divide)/g, '/');
         document.getElementById('display-secondary').textContent = content;
+    } else {
+        document.getElementById('display-secondary').textContent = '';
     }
 }
 
 function updateMainDisplay(content) {
     if(content) {
         content = roundEquation(content, 4).join('');
+        document.getElementById('display-main').textContent = content;
+    } else {
         document.getElementById('display-main').textContent = content;
     }
 }
