@@ -44,48 +44,41 @@ function removeTrailingZeros(n) {
     return parseFloat(n.join(''));
 }
 
-function clearDisplay() {
-        updateMainDisplay();
-        updateSecondaryDisplay();
+function clearDisplay(...displays) {
+    displays.forEach(display => updateDisplay('', display));
 }
 
-function updateSecondaryDisplay(content) {
+function updateDisplay(content, display) {
+    let joinOn = '';
+    if (display.id === 'display-secondary') joinOn = ' ';
     if(content) {
-        content = roundEquation(content, 4).join(' ').replace(/(add)/g, '+')
-                                            .replace(/(subtract)/g, '-')
-                                            .replace(/(multiply)/g, 'x')
-                                            .replace(/(divide)/g, '/');
-        document.getElementById('display-secondary').textContent = content;
+        content = roundEquation(content, 4).join(joinOn).replace(/(add)/g, '+')
+                                                    .replace(/(subtract)/g, '-')
+                                                    .replace(/(multiply)/g, 'x')
+                                                    .replace(/(divide)/g, '/');
+        display.textContent = content;
     } else {
-        document.getElementById('display-secondary').textContent = '';
-    }
-}
-
-function updateMainDisplay(content) {
-    if(content) {
-        content = roundEquation(content, 4).join('');
-        document.getElementById('display-main').textContent = content;
-    } else {
-        document.getElementById('display-main').textContent = content;
+        display.textContent = '';
     }
 }
 
 function calculator() {
-    let displayValue = [];
-    let equation = [];
-    let ans = [];
-    clearDisplay();
-
     const btns = document.querySelectorAll('.btn-number');
     const decimal = document.querySelector('[data-action="decimal"]')
     const operators = document.querySelectorAll('.btn-operator');
     const clear = document.querySelector('[data-action="clear"]');
     const answer = document.querySelector('[data-action="equals"]');
+    const displayMain = document.getElementById('display-main');
+    const displaySecondary = document.getElementById('display-secondary');
+
+    let displayValue = [];
+    let equation = [];
+    let ans = [];
     
     btns.forEach(btn => btn.addEventListener('click', function(e){
             if (ans.length > 0) ans = [];
             displayValue.push(this.textContent);
-            updateMainDisplay(displayValue);
+            updateDisplay(displayValue, displayMain);
     }));
 
     decimal.addEventListener('click', function(e) {
@@ -105,18 +98,18 @@ function calculator() {
         if(displayValue.length === 0 && previousInputIsOperator(equation)) {
             equation.pop();
             equation.push(this.getAttribute('data-action'));
-            updateSecondaryDisplay(equation);
+            updateDisplay(equation, displaySecondary);
         } else if(displayValue.length != 0){
             equation.push(removeTrailingZeros(displayValue));
             displayValue = [];
             equation.push(this.getAttribute('data-action'));
-            clearDisplay();
-            updateSecondaryDisplay(equation);
+            clearDisplay(displayMain, displaySecondary);
+            updateDisplay(equation, displaySecondary);
         }
     }));
 
     clear.addEventListener('click', function(e){
-        clearDisplay();
+        clearDisplay(displayMain, displaySecondary);
         displayValue = [];
         equation = [];
     });
@@ -134,11 +127,11 @@ function calculator() {
 
         solve(equation);
         ans = equation.slice();
-        clearDisplay();
+        clearDisplay(displayMain, displaySecondary);
         displayValue = [];
         equation = [];
-        updateMainDisplay(ans);
-        updateSecondaryDisplay(fullEquation);
+        updateDisplay(ans, displayMain);
+        updateDisplay(fullEquation, displaySecondary);
     });
 }
 
