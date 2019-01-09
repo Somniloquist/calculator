@@ -50,18 +50,20 @@ function clearDisplay() {
 }
 
 function updateSecondaryDisplay(content) {
-    content = content || [];
-    if(content) content = roundEquation(content, 4).join(' ').replace(/(add)/g, '+')
-                                           .replace(/(subtract)/g, '-')
-                                           .replace(/(multiply)/g, 'x')
-                                           .replace(/(divide)/g, '/');
-    document.getElementById('display-secondary').textContent = content;
+    if(content) {
+        content = roundEquation(content, 4).join(' ').replace(/(add)/g, '+')
+                                            .replace(/(subtract)/g, '-')
+                                            .replace(/(multiply)/g, 'x')
+                                            .replace(/(divide)/g, '/');
+        document.getElementById('display-secondary').textContent = content;
+    }
 }
 
 function updateMainDisplay(content) {
-    content = content || 0;
-    if(content) content = roundEquation(content, 4).join('');
-    document.getElementById('display-main').textContent = content;
+    if(content) {
+        content = roundEquation(content, 4).join('');
+        document.getElementById('display-main').textContent = content;
+    }
 }
 
 function calculator() {
@@ -77,11 +79,9 @@ function calculator() {
     const answer = document.querySelector('[data-action="equals"]');
     
     btns.forEach(btn => btn.addEventListener('click', function(e){
-        if(displayValue.length > 0 || btn.textContent != '0') {
             if (ans.length > 0) ans = [];
             displayValue.push(this.textContent);
             updateMainDisplay(displayValue);
-        }
     }));
 
     decimal.addEventListener('click', function(e) {

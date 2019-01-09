@@ -21,13 +21,13 @@ body {
     background: #2d2d2d;
     color: #fafafa;
     grid-column: 1 / -1;
+    height: 1.15em;
     padding: 0.5em;
     font-size: 1.5em;
     text-align: right;
     overflow: hidden;
 }
 #display-secondary {
-    height: 1.1em;
     font-size: 1em;
 }
 .btn {
