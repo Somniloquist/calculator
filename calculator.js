@@ -93,7 +93,7 @@ function calculator() {
         if(!displayValue.includes('.')) {
             if (displayValue.length === 0) displayValue.push('0');
             displayValue.push(this.textContent);
-            updateMainDisplay(displayValue);
+            updateDisplay(displayValue, displayMain);
         }
     });
 
