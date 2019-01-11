@@ -34,6 +34,10 @@ function solve(equation) {
             equation.splice(index - 1, 3, operate(window[operator], a, b));
         }
     });
+    console.log(equation);
+}
+
+function isdivideByZero(equation) {
 }
 
 function previousInputIsOperator(equation) {
@@ -51,6 +55,10 @@ function clearDisplay(...displays) {
 function updateDisplay(content, display) {
     let joinOn = '';
     if (display.id === 'display-secondary') joinOn = ' ';
+    if(isNaN(content[0])) {
+        display.textContent = content;
+        return;
+    }
     if(content) {
         content = roundEquation(content, 4).join(joinOn).replace(/(add)/g, '+')
                                                     .replace(/(subtract)/g, '-')
@@ -127,11 +135,16 @@ function calculator() {
 
         solve(equation);
         ans = equation.slice();
-        clearDisplay(displayMain, displaySecondary);
         displayValue = [];
         equation = [];
-        updateDisplay(ans, displayMain);
-        updateDisplay(fullEquation, displaySecondary);
+        if(ans[0] === Infinity) {
+            updateDisplay('Don\'t divide by zero kids.', displayMain);
+            clearDisplay(displaySecondary)
+            ans = [];
+        } else {
+            updateDisplay(ans, displayMain);
+            updateDisplay(fullEquation, displaySecondary);
+        }
     });
 }
 
