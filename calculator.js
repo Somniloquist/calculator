@@ -14,13 +14,28 @@ function operate(operator, a, b) {
     return operator(a, b);
 }
 
+function isNum(n) {
+    return !isNaN(n);
+}
+
+function isExponent(n) {
+    return n.toString().split('').includes('e');
+}
+
 function round(n, decimals) {
     decimals = decimals || 1;
     return Number(Math.round(n + 'e' + decimals) + 'e-' + decimals);
 }
 
 function roundEquation(equation, decimals) {
-    return equation.map(n => isNaN(n) ? n : round(n, decimals))
+    const result = equation.map(n => {
+        if(isNum(n) && isExponent(n)) {
+            return n;
+        } else {
+            return isNaN(n) ? n : round(n, decimals)
+        }
+    });
+    return result;
 }
 
 function solve(equation) {
@@ -35,9 +50,6 @@ function solve(equation) {
         }
     });
     console.log(equation);
-}
-
-function isdivideByZero(equation) {
 }
 
 function previousInputIsOperator(equation) {
@@ -102,7 +114,6 @@ function calculator() {
             displayValue = ans.slice();
             ans = [];
         }
-        //change operator if an oporator is pressed again
         if(displayValue.length === 0 && previousInputIsOperator(equation)) {
             equation.pop();
             equation.push(this.getAttribute('data-action'));
@@ -139,6 +150,10 @@ function calculator() {
         equation = [];
         if(ans[0] === Infinity) {
             updateDisplay('Don\'t divide by zero kids.', displayMain);
+            clearDisplay(displaySecondary)
+            ans = [];
+        } else if(isNaN(ans[0])) {
+            updateDisplay(ans[0], displayMain);
             clearDisplay(displaySecondary)
             ans = [];
         } else {
