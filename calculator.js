@@ -49,7 +49,6 @@ function solve(equation) {
             equation.splice(index - 1, 3, operate(window[operator], a, b));
         }
     });
-    console.log(equation);
 }
 
 function previousInputIsOperator(equation) {
@@ -87,6 +86,7 @@ function calculator() {
     const decimal = document.querySelector('[data-action="decimal"]')
     const operators = document.querySelectorAll('.btn-operator');
     const clear = document.querySelector('[data-action="clear"]');
+    const del = document.querySelector('[data-action="delete"]');
     const answer = document.querySelector('[data-action="equals"]');
     const displayMain = document.getElementById('display-main');
     const displaySecondary = document.getElementById('display-secondary');
@@ -131,6 +131,11 @@ function calculator() {
         clearDisplay(displayMain, displaySecondary);
         displayValue = [];
         equation = [];
+    });
+
+    del.addEventListener('click', function(e){
+        ans.pop() || displayValue.pop();
+        updateDisplay(displayValue, displayMain);
     });
 
     answer.addEventListener('click', function(e) {
