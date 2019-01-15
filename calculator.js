@@ -81,6 +81,12 @@ function updateDisplay(content, display) {
     }
 }
 
+function testup(e) {
+    e = e || dcoument.event;
+    e.target.value = e.target.value.replace(/[^\d\+\-\*\=\/\.]/g, '');
+
+}
+
 function calculator() {
     const btns = document.querySelectorAll('.btn-number');
     const decimal = document.querySelector('[data-action="decimal"]')
@@ -94,6 +100,16 @@ function calculator() {
     let displayValue = [];
     let equation = [];
     let ans = [];
+
+    displayMain.focus();
+    displayMain.onkeydown = function(e) {
+        if(displayValue.length === 0 && e.key === '.') displayValue.push('0');
+        if(displayValue.includes('.') && e.key === '.') return;
+        if(e.key.match(/^[\d\+\-\=\*\/\.]/)) {
+            displayValue.push(e.key);
+            updateDisplay(displayValue, this);
+        }
+    }
     
     btns.forEach(btn => btn.addEventListener('click', function(e){
             if (ans.length > 0) ans = [];
@@ -124,6 +140,8 @@ function calculator() {
             equation.push(this.getAttribute('data-action'));
             clearDisplay(displayMain, displaySecondary);
             updateDisplay(equation, displaySecondary);
+            console.log(displayValue);
+            console.log(equation);
         }
     }));
 
