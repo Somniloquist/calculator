@@ -81,10 +81,11 @@ function updateDisplay(content, display) {
     }
 }
 
-function testup(e) {
-    e = e || dcoument.event;
-    e.target.value = e.target.value.replace(/[^\d\+\-\*\=\/\.]/g, '');
-
+function getDataAction(key) {
+    return key.replace(/^[+]/, 'add')
+                .replace(/^[-]/, 'subtract')
+                .replace(/^[*]/, 'multiply')
+                .replace(/^[/]/, 'divide');
 }
 
 function calculator() {
@@ -103,21 +104,76 @@ function calculator() {
 
     displayMain.focus();
     displayMain.onkeydown = function(e) {
-        if(displayValue.length === 0 && e.key === '.') displayValue.push('0');
-        if(displayValue.includes('.') && e.key === '.') return;
-        if(e.key.match(/^[\d\+\-\=\*\/\.]/)) {
+        if(e.key.match(/^[\d]/)) {
+            if (ans.length > 0) ans = [];
             displayValue.push(e.key);
-            updateDisplay(displayValue, this);
+        } else if(e.key.match(/^[\.]/)) {
+            if(displayValue.includes('.')) return;
+            if(displayValue.length === 0) displayValue.push('0');
+            displayValue.push(e.key);
+        } else if(e.key.match(/^[\+\-\*\/]/)){
+            if (ans.length > 0) {
+                displayValue = ans.slice();
+                ans = [];
+            }
+            if(displayValue.length === 0 && previousInputIsOperator(equation)) {
+                equation.pop();
+                equation.push(getDataAction(e.key));
+                updateDisplay(equation, displaySecondary);
+            } else if(displayValue.length != 0){
+                equation.push(removeTrailingZeros(displayValue));
+                displayValue = [];
+                equation.push(getDataAction(e.key));
+                clearDisplay(displayMain, displaySecondary);
+                updateDisplay(equation, displaySecondary);
+            }
+        } else if(e.key.match(/^[\=]/) || e.key.match('Enter')) {
+            if(displayValue.length > 0) {
+                equation.push(removeTrailingZeros(displayValue));
+            }
+            if(equation.length === 0 || previousInputIsOperator(equation)) {
+                return;
+            }
+
+            let fullEquation = equation.slice();
+            fullEquation.push('=')
+
+            solve(equation);
+            ans = equation.slice();
+            displayValue = [];
+            equation = [];
+            if(ans[0] === Infinity) {
+                updateDisplay('Don\'t divide by zero kids.', displayMain);
+                clearDisplay(displaySecondary)
+                ans = [];
+            } else if(isNaN(ans[0])) {
+                updateDisplay(ans[0], displayMain);
+                clearDisplay(displaySecondary)
+                ans = [];
+            } else {
+                updateDisplay(ans, displayMain);
+                updateDisplay(fullEquation, displaySecondary);
+            }
+        } else if(e.key === 'Backspace') {
+            ans.pop() || displayValue.pop();
+        } else {
+            console.log(e.key);
         }
+
+        ans.length === 0 ? updateDisplay(displayValue, this) : updateDisplay(ans, this);
     }
     
+    // refactor click and keydown events
+    // change to function, add case for event types 'click', 'keydown'
     btns.forEach(btn => btn.addEventListener('click', function(e){
-            if (ans.length > 0) ans = [];
-            displayValue.push(this.textContent);
-            updateDisplay(displayValue, displayMain);
+        displayMain.focus();
+        if (ans.length > 0) ans = [];
+        displayValue.push(this.textContent);
+        updateDisplay(displayValue, displayMain);
     }));
 
     decimal.addEventListener('click', function(e) {
+        displayMain.focus();
         if(!displayValue.includes('.')) {
             if (displayValue.length === 0) displayValue.push('0');
             displayValue.push(this.textContent);
@@ -126,6 +182,7 @@ function calculator() {
     });
 
     operators.forEach(btn => btn.addEventListener('click', function(e) {
+        displayMain.focus();
         if (ans.length > 0) {
             displayValue = ans.slice();
             ans = [];
@@ -140,23 +197,24 @@ function calculator() {
             equation.push(this.getAttribute('data-action'));
             clearDisplay(displayMain, displaySecondary);
             updateDisplay(equation, displaySecondary);
-            console.log(displayValue);
-            console.log(equation);
         }
     }));
 
     clear.addEventListener('click', function(e){
+        displayMain.focus();
         clearDisplay(displayMain, displaySecondary);
         displayValue = [];
         equation = [];
     });
 
     del.addEventListener('click', function(e){
+        displayMain.focus();
         ans.pop() || displayValue.pop();
         updateDisplay(displayValue, displayMain);
     });
 
     answer.addEventListener('click', function(e) {
+        displayMain.focus();
         if(displayValue.length > 0) {
             equation.push(removeTrailingZeros(displayValue));
         }
