@@ -157,7 +157,7 @@ function calculator() {
         } else if(e.key === 'Backspace') {
             ans.pop() || displayValue.pop();
         } else {
-            console.log(e.key);
+            return;
         }
 
         ans.length === 0 ? updateDisplay(displayValue, this) : updateDisplay(ans, this);
