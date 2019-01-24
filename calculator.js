@@ -102,119 +102,56 @@ function calculator() {
     let equation = [];
     let ans = [];
 
-    displayMain.focus();
-    displayMain.onkeydown = function(e) {
-        if(e.key.match(/^[\d]/)) {
-            if (ans.length > 0) ans = [];
-            displayValue.push(e.key);
-        } else if(e.key.match(/^[\.]/)) {
-            if(displayValue.includes('.')) return;
-            if(displayValue.length === 0) displayValue.push('0');
-            displayValue.push(e.key);
-        } else if(e.key.match(/^[\+\-\*\/]/)){
-            if (ans.length > 0) {
-                displayValue = ans.slice();
-                ans = [];
-            }
-            if(displayValue.length === 0 && previousInputIsOperator(equation)) {
-                equation.pop();
-                equation.push(getDataAction(e.key));
-                updateDisplay(equation, displaySecondary);
-            } else if(displayValue.length != 0){
-                equation.push(removeTrailingZeros(displayValue));
-                displayValue = [];
-                equation.push(getDataAction(e.key));
-                clearDisplay(displayMain, displaySecondary);
-                updateDisplay(equation, displaySecondary);
-            }
-        } else if(e.key.match(/^[\=]/) || e.key.match('Enter')) {
-            if(displayValue.length > 0) {
-                equation.push(removeTrailingZeros(displayValue));
-            }
-            if(equation.length === 0 || previousInputIsOperator(equation)) {
-                return;
-            }
-
-            let fullEquation = equation.slice();
-            fullEquation.push('=')
-
-            solve(equation);
-            ans = equation.slice();
-            displayValue = [];
-            equation = [];
-            if(ans[0] === Infinity) {
-                updateDisplay('Don\'t divide by zero kids.', displayMain);
-                clearDisplay(displaySecondary)
-                ans = [];
-            } else if(isNaN(ans[0])) {
-                updateDisplay(ans[0], displayMain);
-                clearDisplay(displaySecondary)
-                ans = [];
-            } else {
-                updateDisplay(ans, displayMain);
-                updateDisplay(fullEquation, displaySecondary);
-            }
-        } else if(e.key === 'Backspace') {
-            ans.pop() || displayValue.pop();
-        } else {
-            return;
-        }
-
-        ans.length === 0 ? updateDisplay(displayValue, this) : updateDisplay(ans, this);
-    }
-    
-    // refactor click and keydown events
-    // change to function, add case for event types 'click', 'keydown'
-    btns.forEach(btn => btn.addEventListener('click', function(e){
-        displayMain.focus();
+    function displayDigit(e, btn) {
         if (ans.length > 0) ans = [];
-        displayValue.push(this.textContent);
+        if (e.type === 'click') {
+            displayValue.push(btn.textContent);
+        } else if (e.type === 'keydown') {
+            displayValue.push(e.key);
+        }
         updateDisplay(displayValue, displayMain);
-    }));
+    }
 
-    decimal.addEventListener('click', function(e) {
-        displayMain.focus();
+    function displayDecimal(e, btn) {
         if(!displayValue.includes('.')) {
             if (displayValue.length === 0) displayValue.push('0');
-            displayValue.push(this.textContent);
+            if (e.type === 'click') {
+                displayValue.push(btn.textContent);
+            } else if (e.type === 'keydown') {
+                displayValue.push(e.key);
+            }
             updateDisplay(displayValue, displayMain);
         }
-    });
+    }
 
-    operators.forEach(btn => btn.addEventListener('click', function(e) {
-        displayMain.focus();
+    function displayOperator(e, btn) {
         if (ans.length > 0) {
             displayValue = ans.slice();
             ans = [];
         }
         if(displayValue.length === 0 && previousInputIsOperator(equation)) {
             equation.pop();
-            equation.push(this.getAttribute('data-action'));
-            updateDisplay(equation, displaySecondary);
+            if (e.type === 'click') {
+                equation.push(btn.getAttribute('data-action'));
+            }
+            else if(e.type === 'keydown') {
+                equation.push(getDataAction(e.key));
+            }
         } else if(displayValue.length != 0){
             equation.push(removeTrailingZeros(displayValue));
             displayValue = [];
-            equation.push(this.getAttribute('data-action'));
+            if (e.type === 'click') {
+                equation.push(btn.getAttribute('data-action'));
+            }
+            else if(e.type === 'keydown') {
+                equation.push(getDataAction(e.key));
+            }
             clearDisplay(displayMain, displaySecondary);
-            updateDisplay(equation, displaySecondary);
         }
-    }));
+            updateDisplay(equation, displaySecondary);
+    }
 
-    clear.addEventListener('click', function(e){
-        displayMain.focus();
-        clearDisplay(displayMain, displaySecondary);
-        displayValue = [];
-        equation = [];
-    });
-
-    del.addEventListener('click', function(e){
-        displayMain.focus();
-        ans.pop() || displayValue.pop();
-        updateDisplay(displayValue, displayMain);
-    });
-
-    answer.addEventListener('click', function(e) {
-        displayMain.focus();
+    function displayAnswer() {
         if(displayValue.length > 0) {
             equation.push(removeTrailingZeros(displayValue));
         }
@@ -241,6 +178,57 @@ function calculator() {
             updateDisplay(ans, displayMain);
             updateDisplay(fullEquation, displaySecondary);
         }
+    }
+
+    displayMain.focus();
+    displayMain.onkeydown = function(e) {
+        if(e.key.match(/^[\d]/)) {
+            displayDigit(e);
+        } else if(e.key.match(/^[\.]/)) {
+            displayDecimal(e);
+        } else if(e.key.match(/^[\+\-\*\/]/)){
+            displayOperator(e);
+        } else if(e.key.match(/^[\=]/) || e.key.match('Enter')) {
+            displayAnswer();
+        } else if(e.key === 'Backspace') {
+            ans.pop() || displayValue.pop();
+            updateDisplay(displayValue, this);
+        } else {
+            return;
+        }
+    }
+
+    btns.forEach(btn => btn.addEventListener('click', function(e){
+        displayMain.focus();
+        displayDigit(e, btn);
+    }));
+
+    decimal.addEventListener('click', function(e) {
+        displayMain.focus();
+        displayDecimal(e, decimal);
+    });
+
+    operators.forEach(btn => btn.addEventListener('click', function(e) {
+        displayMain.focus();
+        displayOperator(e, btn);
+    }));
+
+    clear.addEventListener('click', function(e){
+        displayMain.focus();
+        clearDisplay(displayMain, displaySecondary);
+        displayValue = [];
+        equation = [];
+    });
+
+    del.addEventListener('click', function(e){
+        displayMain.focus();
+        ans.pop() || displayValue.pop();
+        updateDisplay(displayValue, displayMain);
+    });
+
+    answer.addEventListener('click', function(e) {
+        displayMain.focus();
+        displayAnswer(e, answer);
     });
 }
 
